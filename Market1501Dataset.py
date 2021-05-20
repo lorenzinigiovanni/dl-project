@@ -72,7 +72,7 @@ class Market1501Dataset(Dataset):
                 'gender': labels[9],
                 'color_upper_body_clothing': torch.tensor(j, dtype=torch.long).to(self.device),
                 'color_lower_body_clothing': torch.tensor(k, dtype=torch.long).to(self.device),
-                'internal_id': self.id_to_internal_id[self.dict[idx][1]]
+                'internal_id': torch.tensor(self.id_to_internal_id[self.dict[idx][1]], dtype=torch.long).to(self.device)
             }
 
             return (image, labels)
