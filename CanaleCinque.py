@@ -82,12 +82,64 @@ class BasicBlock(nn.Module):
         return out
 
 
+class Bottleneck(nn.Module):
+    expansion: int = 4
+
+    def __init__(
+        self,
+        inplanes: int,
+        planes: int,
+        stride: int = 1,
+        downsample: Optional[nn.Module] = None,
+        groups: int = 1,
+        base_width: int = 64,
+        dilation: int = 1,
+        norm_layer: Optional[Callable[..., nn.Module]] = None
+    ) -> None:
+        super(Bottleneck, self).__init__()
+        if norm_layer is None:
+            norm_layer = nn.BatchNorm2d
+        width = int(planes * (base_width / 64.)) * groups
+        # Both self.conv2 and self.downsample layers downsample the input when stride != 1
+        self.conv1 = conv1x1(inplanes, width)
+        self.bn1 = norm_layer(width)
+        self.conv2 = conv3x3(width, width, stride, groups, dilation)
+        self.bn2 = norm_layer(width)
+        self.conv3 = conv1x1(width, planes * self.expansion)
+        self.bn3 = norm_layer(planes * self.expansion)
+        self.relu = nn.ReLU(inplace=True)
+        self.downsample = downsample
+        self.stride = stride
+
+    def forward(self, x: Tensor) -> Tensor:
+        identity = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.relu(out)
+
+        out = self.conv3(out)
+        out = self.bn3(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+
+
 class CanaleCinque(nn.Module):
     def __init__(self, n_person):
         super(CanaleCinque, self).__init__()
 
-        last_channel = 512
-        
+        last_channel = 2048
+
         self.n_person = n_person
         self._norm_layer = nn.BatchNorm2d
         self.inplanes = 64
@@ -109,27 +161,27 @@ class CanaleCinque(nn.Module):
         )
 
         self.layer1 = self._make_layer(
-            BasicBlock,
+            Bottleneck,
             64,
             3
         )
 
         self.layer2 = self._make_layer(
-            BasicBlock,
+            Bottleneck,
             128,
             4,
             stride=2
         )
 
         self.layer3 = self._make_layer(
-            BasicBlock,
+            Bottleneck,
             256,
             6,
             stride=2
         )
 
         self.layer4 = self._make_layer(
-            BasicBlock,
+            Bottleneck,
             512,
             3,
             stride=2
@@ -137,10 +189,17 @@ class CanaleCinque(nn.Module):
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
+        self.fc_layer = nn.Sequential(
+            nn.Linear(
+                in_features=last_channel,
+                out_features=100
+            )
+        )
+
         self.classifier = nn.Sequential(
             nn.Dropout(p=0.2),
             nn.Linear(
-                in_features=last_channel,
+                in_features=100,
                 out_features=self.n_person
             )
         )
@@ -207,6 +266,8 @@ class CanaleCinque(nn.Module):
 
         # flatten
         x = torch.flatten(x, 1)
+
+        x = self.fc_layer(x)
 
         return {
             'pre_classifier': x,

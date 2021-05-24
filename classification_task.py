@@ -216,8 +216,11 @@ def get_data(batch_size, test_batch_size=256, translate=False):
         # transform.append(T.RandomHorizontalFlip())
         transform.append(T.ConvertImageDtype(torch.float))
 
-        # transform.append(T.Normalize(mean=[0.485, 0.456, 0.406], # Roba trovata da una Github di un ciro che ha fatto cose sul Market1501
-        #                      std=[0.229, 0.224, 0.225]))
+        transform.append(T.Normalize(
+            # Roba trovata da una Github di un ciro che ha fatto cose sul Market1501
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225])
+        )
 
         # transform.append(T.Normalize(mean=[0.48], std=[0.25]))      # Normalizes the Tensors between [-1, 1]
         # transform.append(T.Normalize(
