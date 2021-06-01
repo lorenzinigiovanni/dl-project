@@ -173,7 +173,7 @@ def predict_id(values, names):
 
     results = {}
 
-    random.seed("porcoddio")
+    random.seed("forza_napoli")
 
     for _ in range(100):
         i = random.randint(0, len(values) - 1)
@@ -260,7 +260,7 @@ def main(batch_size=128,
          weight_decay=5e-4,
          momentum=0.9,
          epochs=30,
-         is_training=True):
+         is_training=False):
 
     print(torch.cuda.get_device_name(0))
     print('Memory Usage:')
