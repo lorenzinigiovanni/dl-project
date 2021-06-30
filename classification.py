@@ -41,7 +41,7 @@ def annotate_csv(net, data_loader, device='cuda:0'):
             for key, value in outputs.items():
                 _, batch_predicted[key] = value.max(1)
 
-            for name in img_names:
+            for name in img_names['file_name']:
                 if "id" in total_predicteds:
                     total_predicteds["id"].append(name)
                 else:
@@ -51,8 +51,6 @@ def annotate_csv(net, data_loader, device='cuda:0'):
 
             for key, value in batch_predicted.items():
                 for v in value:
-                    # if isinstance(v, torch.Tensor):
-                    #     v = v.item()
                     if key in total_predicteds:
                         total_predicteds[key].append(v)
                     else:
@@ -73,7 +71,7 @@ def unpack_annotation(annotation):
     dictionary["handbag"] = annotation["carrying_handbag"].cpu().numpy() + 1
     dictionary["clothes"] = annotation["type_lower_body_clothing"].cpu().numpy() + 1
     dictionary["down"] = annotation["length_lower_body_clothing"].cpu().numpy() + 1
-    dictionary["up"] = annotation["sleeve_lenght"].cpu().numpy() + 1
+    dictionary["up"] = annotation["sleeve_length"].cpu().numpy() + 1
     dictionary["hair"] = annotation["hair_length"].cpu().numpy() + 1
     dictionary["hat"] = annotation["wearing_hat"].cpu().numpy() + 1
     dictionary["gender"] = annotation["gender"].cpu().numpy() + 1
@@ -104,7 +102,7 @@ def unpack_annotation(annotation):
     }
 
     for k in annotation["color_upper_body_clothing"]:
-        for i in range(9):  # upper body color
+        for i in range(9):
             if i == k:
                 if up_color_dict[i] in dictionary:
                     dictionary[up_color_dict[i]].append(2)
@@ -116,8 +114,8 @@ def unpack_annotation(annotation):
                 else:
                     dictionary[up_color_dict[i]] = [1]
 
-    for k in annotation["color_upper_body_clothing"]:
-        for i in range(10):  # lower body color
+    for k in annotation["color_lower_body_clothing"]:
+        for i in range(10):
             if i == k:
                 if down_color_dict[i] in dictionary:
                     dictionary[down_color_dict[i]].append(2)

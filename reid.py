@@ -7,6 +7,7 @@ from evaluator import Evaluator
 # get the mAP
 def test(net, data_loader):
     values, names = get_vectors(net, data_loader)
+    values = values.cpu()
 
     predictions = {}
 
@@ -31,13 +32,14 @@ def answer_query(net, query_data_loader, test_data_loader):
     query_values, query_names = get_vectors(net, query_data_loader)
     test_values, test_names = get_vectors(net, test_data_loader)
 
+    query_values = query_values.cpu().detach().numpy()
     test_values = test_values.cpu().detach().numpy()
 
     predictions = {}
 
     for i in range(50):  # range(len(query_names)):
         predictions[query_names[i]] = query(
-            query_values.cpu().detach().numpy()[i],
+            query_values[i],
             test_values,
             test_names,
             th=5
@@ -50,8 +52,8 @@ def answer_query(net, query_data_loader, test_data_loader):
 def query(query, values, names, th=30):
     predictions = []
 
-    for i, x in enumerate(values.cpu()):
-        mse = (np.square(query.cpu() - x)).mean()
+    for i, x in enumerate(values):
+        mse = (np.square(query - x)).mean()
         if mse < th:
             predictions.append((names[i], mse))
 
@@ -61,14 +63,14 @@ def query(query, values, names, th=30):
 
 
 # get network outputs and files names
-def get_vectors(net, data_loader, device='cuda:0'):
+def get_vectors(net, data_loader):
     outputs = []
     names = []
 
     net.eval()
     with torch.no_grad():
         for (inputs, targets) in data_loader:
-            output = net(inputs.to(device))
+            output = net(inputs.to('cuda:0'))
             outputs.append(output['pre_id'])
             names += targets['file_name']
 

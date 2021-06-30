@@ -103,20 +103,22 @@ def main(
         with open('network.pt', 'wb') as f:
             torch.save(net, f)
 
-    else: 
+    else:
         with open('network.pt', 'rb') as f:
             model = torch.load(f)
 
-            mAP = reid.test(model, val_loader)
-            print('mAP: ' + str(mAP))
-
+            print('Testing:')
             val_loss, val_accuracy = classification.test(model, val_loader)
-            print('Validation loss {:.5f}, Validation accuracy {:.2f}'.format(
-                val_loss, val_accuracy))
+            mAP = reid.test(model, val_loader)
 
+            print('\t Validation loss {:.5f}, Validation accuracy {:.2f}'.format(val_loss, val_accuracy))
+            print('\t mAP: ' + str(mAP))
+
+            print('Answering ReID task:')
             answers = reid.answer_query(model, query_data, test_loader)
             reid.write_answers_txt(answers)
 
+            print('Answering classification task:')
             classification.annotate_csv(net, test_loader)
 
 
