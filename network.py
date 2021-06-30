@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from bottleneck import Bottleneck, conv1x1
+from bottleneck_layer import Bottleneck, conv1x1
 
 
 class Network(nn.Module):

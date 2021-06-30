@@ -1,4 +1,4 @@
-from torch.utils.tensorboard import SummaryWriter
+from tensorboardX import SummaryWriter
 import torch
 import torch.utils.model_zoo as model_zoo
 import os
@@ -22,7 +22,7 @@ def main(
     learning_rate=1e-3,
     weight_decay=5e-4,
     epochs=30,
-    is_training=True,
+    is_training=True
 ):
 
     print(torch.cuda.get_device_name(0))
@@ -58,13 +58,15 @@ def main(
         print('Before training:')
         train_loss, train_accuracy = training.test(net, train_loader)
         val_loss, val_accuracy = classification.test(net, val_loader)
+        mAP = reid.test(net, val_loader)
 
         log_values(writer, -1, train_loss, train_accuracy, "Train")
         log_values(writer, -1, val_loss, val_accuracy, "Validation")
-        writer.add_scalar("mAP", 0, -1)
+        writer.add_scalar("mAP", mAP, -1)
 
         print('\t Training loss {:.5f}, Training accuracy {:.2f}'.format(train_loss, train_accuracy))
         print('\t Validation loss {:.5f}, Validation accuracy {:.2f}'.format(val_loss, val_accuracy))
+        print('\t mAP: ' + str(mAP))
         print('-----------------------------------------------------')
 
         for e in range(epochs):

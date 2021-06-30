@@ -65,7 +65,7 @@ class Market1501Dataset(Dataset):
                 'carrying_handbag': labels[3],
                 'type_lower_body_clothing': labels[4],
                 'length_lower_body_clothing': labels[5],
-                'sleeve_lenght': labels[6],
+                'sleeve_length': labels[6],
                 'hair_length': labels[7],
                 'wearing_hat': labels[8],
                 'gender': labels[9],

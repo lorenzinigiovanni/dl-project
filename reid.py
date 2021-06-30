@@ -50,8 +50,8 @@ def answer_query(net, query_data_loader, test_data_loader):
 def query(query, values, names, th=30):
     predictions = []
 
-    for i, x in enumerate(values):
-        mse = (np.square(query - x)).mean()
+    for i, x in enumerate(values.cpu()):
+        mse = (np.square(query.cpu() - x)).mean()
         if mse < th:
             predictions.append((names[i], mse))
 
