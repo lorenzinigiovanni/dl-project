@@ -139,3 +139,8 @@ cython_debug/
 
 dataset
 runs
+old
+
+*.csv
+*.txt
+*.pt
