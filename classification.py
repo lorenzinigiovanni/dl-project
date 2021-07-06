@@ -56,6 +56,9 @@ def annotate_csv(net, data_loader, device='cuda:0'):
                     else:
                         total_predicteds[key] = [v]
 
+    del total_predicteds['upmulticolor']
+    del total_predicteds['downmulticolor']
+
     df = pd.DataFrame(total_predicteds)
     df.to_csv("classification_test.csv", index=False)
 

@@ -18,9 +18,9 @@ $ pip3 install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio===0.9.0 -
 ```
 
 ```sh
-$ pip install pandas
+$ pip3 install pandas
 ```
 
 ```sh
-$ pip install tensorboardX
+$ pip3 install tensorboardX
 ```

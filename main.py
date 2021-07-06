@@ -22,7 +22,7 @@ def main(
     learning_rate=1e-3,
     weight_decay=5e-4,
     epochs=30,
-    is_training=True
+    is_training=False
 ):
 
     print(torch.cuda.get_device_name(0))
