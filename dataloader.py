@@ -20,12 +20,6 @@ def get_data(batch_size, test_batch_size):
     training_transform.append(T.RandomRotation(5))
     training_transform.append(T.RandomCrop((256, 128), 10))
     training_transform.append(T.RandomHorizontalFlip())
-    # training_transform.append(T.ColorJitter(
-    #     brightness=0.5,
-    #     contrast=0.5,
-    #     saturation=0.5,
-    #     hue=0.2
-    # ))
 
     # Get data from the dataset
     full_training_data = Market1501Dataset(
@@ -38,7 +32,7 @@ def get_data(batch_size, test_batch_size):
         os.path.join("dataset", "test"),
         transform=T.Compose(transform),
     )
-    
+
     query_data = Market1501Dataset(
         os.path.join("dataset", "queries"),
         transform=T.Compose(transform),

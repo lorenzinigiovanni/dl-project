@@ -37,29 +37,28 @@ def answer_query(net, query_data_loader, test_data_loader):
 
     predictions = {}
 
-    for i in range(50):  # range(len(query_names)):
+    for i in range(len(query_names)):
         predictions[query_names[i]] = query(
             query_values[i],
             test_values,
             test_names,
-            th=5
+            cutoff=50,
         )
 
     return predictions
 
 
 # get an ordered list of file names from a query tensor
-def query(query, values, names, th=30):
+def query(query, values, names, cutoff=500):
     predictions = []
 
     for i, x in enumerate(values):
         mse = (np.square(query - x)).mean()
-        if mse < th:
-            predictions.append((names[i], mse))
+        predictions.append((names[i], mse))
 
     predictions.sort(key=lambda tup: tup[1])
 
-    return [x for x, _ in predictions]
+    return [x for x, _ in predictions[:cutoff]]
 
 
 # get network outputs and files names

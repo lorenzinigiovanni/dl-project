@@ -55,6 +55,9 @@ def main(
             weight_decay=weight_decay
         )
 
+        best_result = 0
+        best_epoch = 0
+
         print('Before training:')
         train_loss, train_accuracy = training.test(net, train_loader)
         val_loss, val_accuracy = classification.test(net, val_loader)
@@ -82,6 +85,17 @@ def main(
             print('\t Training loss {:.5f}, Training accuracy {:.2f}'.format(train_loss, train_accuracy))
             print('\t Validation loss {:.5f}, Validation accuracy {:.2f}'.format(val_loss, val_accuracy))
             print('\t mAP: ' + str(mAP))
+
+            new_best_result = mAP * 100 + val_accuracy
+            if new_best_result > best_result:
+                best_result = new_best_result
+                best_epoch = e+1
+
+                with open('network.pt', 'wb') as f:
+                    torch.save(net, f)
+
+                print('\t New model saved')
+
             print('-----------------------------------------------------')
 
         print('After training:')
@@ -96,12 +110,10 @@ def main(
         print('\t Training loss {:.5f}, Training accuracy {:.2f}'.format(train_loss, train_accuracy))
         print('\t Validation loss {:.5f}, Validation accuracy {:.2f}'.format(val_loss, val_accuracy))
         print('\t mAP: ' + str(mAP))
+        print('\t Best model in epoch: ' + str(best_epoch))
         print('-----------------------------------------------------')
 
         writer.close()
-
-        with open('network.pt', 'wb') as f:
-            torch.save(net, f)
 
     else:
         with open('network.pt', 'rb') as f:

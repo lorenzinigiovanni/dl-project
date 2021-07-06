@@ -57,7 +57,7 @@ def annotate_csv(net, data_loader, device='cuda:0'):
                         total_predicteds[key] = [v]
 
     df = pd.DataFrame(total_predicteds)
-    df.to_csv("annotations_train.csv", index=False)
+    df.to_csv("classification_test.csv", index=False)
 
     return True
 

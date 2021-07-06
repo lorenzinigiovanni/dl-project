@@ -1,5 +1,6 @@
 import torch
 
+
 def train(net, data_loader, optimizer, device='cuda:0'):
     samples = 0.
     cumulative_loss = 0.

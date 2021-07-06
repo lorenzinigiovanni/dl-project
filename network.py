@@ -80,7 +80,11 @@ class Network(nn.Module):
             nn.Linear(
                 in_features=last_channel,
                 out_features=last_last_channel
-            )
+            ),
+            nn.BatchNorm1d(
+                last_last_channel
+            ),
+            nn.ReLU(inplace=True)
         )
 
         attribute_dim = 0
@@ -183,8 +187,6 @@ class Network(nn.Module):
 
         y = self.fc_layer(x)
 
-        # INSERIRE BATCH NORM, RELU A PIACERE COME FANNO I DOTTORI NELL'ALTRO PAPER
-
         output = {}
         for k, v in self.layers.items():
             output[k] = v(y)
@@ -233,7 +235,7 @@ class Network(nn.Module):
 
         return accuracy / (len(self.attributes) + 1)
 
-    # loss for testing
+    # loss for validation split
     def get_test_loss(self, net_output, ground_truth):
 
         loss = 0.0
@@ -246,7 +248,7 @@ class Network(nn.Module):
 
         return loss
 
-    # accuracy for testing
+    # accuracy for validation split
     def get_test_accuracy(self, predicteds, ground_truth):
 
         accuracy = 0.0
