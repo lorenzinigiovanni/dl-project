@@ -118,6 +118,7 @@ class Network(nn.Module):
             nn.Sigmoid()
         )
 
+    # DISCLAIMER: this method has been taken from PyTorch ResNet source code
     def _make_layer(self, block, planes, blocks, stride=1, dilate=False) -> nn.Sequential:
         norm_layer = self._norm_layer
         downsample = None

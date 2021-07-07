@@ -1,3 +1,5 @@
+# DISCLAIMER: the content of this file has been taken from PyTorch ResNet source code
+
 from typing import Callable, Optional
 from torch import Tensor
 import torch.nn as nn
