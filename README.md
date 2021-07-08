@@ -28,7 +28,7 @@ $ pip3 install tensorboardX
 ```
 
 ```sh
-pip3 install numpy
+$ pip3 install numpy
 ```
 
 # Dataset
