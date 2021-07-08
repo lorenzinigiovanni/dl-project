@@ -1,0 +1,14 @@
+name: deep-learning
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python>=3.9
+  - pytorch
+  - torchvision 
+  - torchaudio 
+  - cudatoolkit=11.1
+  - pandas
+  - tensorboardX
+  - numpy
